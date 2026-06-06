@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: "Gagal memproses registrasi.",
+        error: `Gagal memproses registrasi: ${error.message || error}`,
         details: error.message,
       },
       { status: 500 }

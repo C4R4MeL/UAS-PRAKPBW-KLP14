@@ -34,6 +34,9 @@ export async function GET() {
     }
 
     const history = await prisma.skrining.findMany({
+      where: {
+        kaderId: kader.id,
+      },
       orderBy: {
         createdAt: "desc",
       },

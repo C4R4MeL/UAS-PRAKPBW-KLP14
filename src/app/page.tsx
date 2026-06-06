@@ -379,7 +379,7 @@ ${rekomendasi}`;
                     placeholder="Contoh: Bidan Siti Aminah"
                     value={authNamaLengkap}
                     onChange={(e) => setAuthNamaLengkap(e.target.value)}
-                    className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                   />
                 </div>
               )}
@@ -393,7 +393,7 @@ ${rekomendasi}`;
                   placeholder="Contoh: sitiaminah"
                   value={authUsername}
                   onChange={(e) => setAuthUsername(e.target.value)}
-                  className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -406,7 +406,7 @@ ${rekomendasi}`;
                   placeholder="Minimal 6 karakter"
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -597,7 +597,7 @@ ${rekomendasi}`;
                       placeholder="Cari nama ibu..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full sm:w-64 pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                      className="w-full sm:w-64 pl-10 pr-4 py-2 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                     />
                     <svg className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -749,7 +749,7 @@ ${rekomendasi}`;
                     placeholder="Contoh: Siti Aminah"
                     value={namaIbu}
                     onChange={(e) => setNamaIbu(e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
+                    className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
                   />
                 </div>
 
@@ -769,7 +769,7 @@ ${rekomendasi}`;
                       placeholder="Contoh: 28"
                       value={usia}
                       onChange={(e) => setUsia(e.target.value)}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
+                      className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
                     />
                   </div>
 
@@ -802,7 +802,7 @@ ${rekomendasi}`;
                               placeholder="e.g. 60"
                               value={beratBadan}
                               onChange={(e) => setBeratBadan(e.target.value)}
-                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
+                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
                             />
                           </div>
                           <div className="space-y-1">
@@ -812,7 +812,7 @@ ${rekomendasi}`;
                               placeholder="e.g. 158"
                               value={tinggiBadan}
                               onChange={(e) => setTinggiBadan(e.target.value)}
-                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
+                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
                             />
                           </div>
                         </div>
@@ -835,7 +835,7 @@ ${rekomendasi}`;
                         placeholder="Contoh: 24.5"
                         value={imt}
                         onChange={(e) => setImt(e.target.value)}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
+                        className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
                       />
                     )}
                     {!showBmiHelper && (
@@ -867,7 +867,7 @@ ${rekomendasi}`;
                         placeholder="Batas: 160"
                         value={sistolik}
                         onChange={(e) => setSistolik(e.target.value)}
-                        className="w-full px-4 py-3 border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm text-center font-bold text-slate-800"
+                        className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm text-center font-bold"
                       />
                     </div>
 
@@ -885,7 +885,7 @@ ${rekomendasi}`;
                         placeholder="Batas: 90"
                         value={diastolik}
                         onChange={(e) => setDiastolik(e.target.value)}
-                        className="w-full px-4 py-3 border border-slate-200 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm text-center font-bold text-slate-800"
+                        className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm text-center font-bold"
                       />
                     </div>
                   </div>
@@ -947,7 +947,7 @@ ${rekomendasi}`;
                         placeholder="Contoh: 3"
                         value={jarakKehamilan}
                         onChange={(e) => setJarakKehamilan(e.target.value)}
-                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
+                        className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
                       />
                     </div>
                   )}

@@ -35,8 +35,8 @@ export async function POST(request: Request) {
 
     if (!kader) {
       return NextResponse.json(
-        { success: false, error: "Username atau password salah." },
-        { status: 401 }
+        { success: false, error: "Akun tidak ditemukan. Silakan periksa kembali username Anda atau daftar akun baru." },
+        { status: 404 }
       );
     }
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     const isPasswordValid = await bcrypt.compare(password, kader.password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { success: false, error: "Username atau password salah." },
+        { success: false, error: "Password yang Anda masukkan salah." },
         { status: 401 }
       );
     }

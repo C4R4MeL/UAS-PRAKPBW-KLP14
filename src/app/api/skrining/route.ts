@@ -1,12 +1,48 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "momcare-connect-super-secret-key-2026";
+
+// Fungsi pembantu untuk memverifikasi autentikasi kader
+async function verifyAuth() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  if (!token) return null;
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as {
+      id: string;
+      username: string;
+      namaLengkap: string;
+    };
+    return decoded;
+  } catch (err) {
+    return null;
+  }
+}
 
 // Handler untuk mengambil riwayat skrining (GET /api/skrining)
 export async function GET() {
   try {
+    const kader = await verifyAuth();
+    if (!kader) {
+      return NextResponse.json(
+        { success: false, error: "Akses ditolak. Silakan login terlebih dahulu." },
+        { status: 401 }
+      );
+    }
+
     const history = await prisma.skrining.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        kader: {
+          select: {
+            namaLengkap: true,
+          },
+        },
       },
     });
 
@@ -30,6 +66,14 @@ export async function GET() {
 // Handler untuk membuat skrining baru (POST /api/skrining)
 export async function POST(request: Request) {
   try {
+    const kader = await verifyAuth();
+    if (!kader) {
+      return NextResponse.json(
+        { success: false, error: "Akses ditolak. Silakan login terlebih dahulu." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const {
       namaIbu,
@@ -132,6 +176,14 @@ export async function POST(request: Request) {
         imt: bmiNum,
         statusRisiko,
         kriteriaPemicu,
+        kaderId: kader.id, // Kaitkan dengan ID Kader yang sedang login
+      },
+      include: {
+        kader: {
+          select: {
+            namaLengkap: true,
+          },
+        },
       },
     });
 

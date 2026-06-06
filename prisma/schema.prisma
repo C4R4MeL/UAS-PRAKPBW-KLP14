@@ -12,6 +12,15 @@ datasource db {
   provider = "postgresql"
 }
 
+model Kader {
+  id          String     @id @default(cuid())
+  username    String     @unique
+  namaLengkap String
+  password    String
+  skrining    Skrining[]
+  createdAt   DateTime   @default(now())
+}
+
 model Skrining {
   id              String   @id @default(cuid())
   namaIbu         String
@@ -24,4 +33,6 @@ model Skrining {
   statusRisiko    String   // "Risiko Tinggi" atau "Aman"
   kriteriaPemicu  String   // Kriteria risiko yang terpicu (disimpan sebagai teks dipisah koma atau JSON)
   createdAt       DateTime @default(now())
+  kaderId         String?  // Nullable untuk kompatibilitas data lama
+  kader           Kader?   @relation(fields: [kaderId], references: [id])
 }

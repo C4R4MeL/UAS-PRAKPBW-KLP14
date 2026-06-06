@@ -15,13 +15,33 @@ interface Skrining {
   statusRisiko: string;
   kriteriaPemicu: string;
   createdAt: string;
+  kader?: {
+    namaLengkap: string;
+  };
+}
+
+interface User {
+  id: string;
+  username: string;
+  namaLengkap: string;
 }
 
 export default function Home() {
-  // States
+  // Sesi & Autentikasi States
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [authTab, setAuthTab] = useState<"login" | "register">("login");
+  const [authUsername, setAuthUsername] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authNamaLengkap, setAuthNamaLengkap] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authSuccess, setAuthSuccess] = useState("");
+  const [authSubmitting, setAuthSubmitting] = useState(false);
+
+  // Aplikasi States
   const [activeTab, setActiveTab] = useState<"dashboard" | "form">("dashboard");
   const [history, setHistory] = useState<Skrining[]>([]);
-  const [loadingHistory, setLoadingHistory] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [resultData, setResultData] = useState<Skrining | null>(null);
 
@@ -43,7 +63,30 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [riskFilter, setRiskFilter] = useState("All");
 
-  // Fetch screening history
+  // Periksa sesi aktif pada saat mount
+  const checkSession = async () => {
+    try {
+      setCheckingSession(true);
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (data.success) {
+        setCurrentUser(data.data);
+      } else {
+        setCurrentUser(null);
+      }
+    } catch (error) {
+      console.error("Gagal memverifikasi sesi:", error);
+      setCurrentUser(null);
+    } finally {
+      setCheckingSession(false);
+    }
+  };
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  // Memuat data riwayat skrining (hanya jika sudah login)
   const fetchHistory = async () => {
     try {
       setLoadingHistory(true);
@@ -60,10 +103,75 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    if (currentUser) {
+      fetchHistory();
+    }
+  }, [currentUser]);
 
-  // Submit handler
+  // Submit Handler untuk Login & Registrasi
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError("");
+    setAuthSuccess("");
+    setAuthSubmitting(true);
+
+    try {
+      const isLogin = authTab === "login";
+      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+      const payload = isLogin
+        ? { username: authUsername, password: authPassword }
+        : { username: authUsername, namaLengkap: authNamaLengkap, password: authPassword };
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        if (isLogin) {
+          setCurrentUser(data.data);
+          setAuthUsername("");
+          setAuthPassword("");
+        } else {
+          setAuthSuccess(data.message || "Registrasi berhasil! Silakan login.");
+          setAuthTab("login");
+          setAuthPassword("");
+          setAuthNamaLengkap("");
+        }
+      } else {
+        setAuthError(data.error || "Gagal memproses permintaan.");
+      }
+    } catch (error) {
+      console.error("Error submitting auth:", error);
+      setAuthError("Terjadi kesalahan sistem. Silakan coba lagi.");
+    } finally {
+      setAuthSubmitting(false);
+    }
+  };
+
+  // Handler untuk keluar sesi (Logout)
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/me", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCurrentUser(null);
+        setHistory([]);
+        setResultData(null);
+      }
+    } catch (error) {
+      console.error("Gagal logout:", error);
+    }
+  };
+
+  // Submit handler untuk skrining baru
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -91,9 +199,7 @@ export default function Home() {
 
       if (data.success) {
         setResultData(data.data);
-        // Refresh history
         fetchHistory();
-        // Reset form
         resetForm();
       } else {
         alert("Gagal melakukan skrining: " + data.error);
@@ -174,6 +280,158 @@ ${rekomendasi}`;
     return matchesSearch && matchesRisk;
   });
 
+  // Tampilan Loading Awal Sesi
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen bg-gradient-to-tr from-rose-50 via-slate-50 to-violet-50 flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm font-bold text-slate-500 animate-pulse">Memeriksa sesi login...</p>
+      </div>
+    );
+  }
+
+  // Tampilan Portal Login & Registrasi
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-tr from-rose-500 via-pink-500 to-violet-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        
+        {/* Latar Belakang Lingkaran Blur */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-300/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="w-full max-w-md bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden relative z-10 animate-scaleUp">
+          
+          {/* Header Portal */}
+          <div className="p-6 text-center bg-slate-900 text-white flex flex-col items-center">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-violet-600 flex items-center justify-center text-white font-bold shadow-lg mb-3">
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h2 className="text-2xl font-black tracking-tight">MomCare Connect</h2>
+            <p className="text-xs text-slate-400 mt-1 uppercase tracking-widest font-semibold">
+              Portal Kader Kesehatan Desa
+            </p>
+          </div>
+
+          {/* Form Container */}
+          <div className="p-6 sm:p-8">
+            {/* Toggle Tab */}
+            <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab("login");
+                  setAuthError("");
+                  setAuthSuccess("");
+                }}
+                className={`flex-1 py-2 text-center text-xs font-bold rounded-lg transition-all ${
+                  authTab === "login"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                Masuk Sesi
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAuthTab("register");
+                  setAuthError("");
+                  setAuthSuccess("");
+                }}
+                className={`flex-1 py-2 text-center text-xs font-bold rounded-lg transition-all ${
+                  authTab === "register"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                Daftar Akun
+              </button>
+            </div>
+
+            {/* Error & Success Alert */}
+            {authError && (
+              <div className="p-3 mb-4 bg-rose-50 border border-rose-100 rounded-xl text-xs text-rose-600 font-medium flex items-center space-x-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <span>{authError}</span>
+              </div>
+            )}
+            {authSuccess && (
+              <div className="p-3 mb-4 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-600 font-medium flex items-center space-x-2 animate-fadeIn">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>{authSuccess}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleAuthSubmit} className="space-y-4">
+              {/* Nama Lengkap (Hanya saat Register) */}
+              {authTab === "register" && (
+                <div className="space-y-1.5 animate-slideDown">
+                  <label className="text-xs font-bold text-slate-700">Nama Lengkap Kader</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Bidan Siti Aminah"
+                    value={authNamaLengkap}
+                    onChange={(e) => setAuthNamaLengkap(e.target.value)}
+                    className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              )}
+
+              {/* Username */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Username</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: sitiaminah"
+                  value={authUsername}
+                  onChange={(e) => setAuthUsername(e.target.value)}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">Password</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Minimal 6 karakter"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={authSubmitting}
+                className="w-full py-3 mt-2 bg-gradient-to-r from-rose-500 via-pink-500 to-violet-600 hover:opacity-90 text-white font-bold text-sm rounded-xl shadow-lg shadow-rose-200 hover:shadow-none transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+              >
+                {authSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Memproses...</span>
+                  </>
+                ) : (
+                  <span>{authTab === "login" ? "Masuk Aplikasi" : "Daftar Akun Baru"}</span>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Tampilan Dashboard Utama (Hanya jika sudah login)
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-rose-500 selection:text-white pb-12">
       {/* Header Premium */}
@@ -181,7 +439,6 @@ ${rekomendasi}`;
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 via-pink-500 to-violet-600 flex items-center justify-center text-white font-bold shadow-md shadow-rose-200">
-              {/* Logo SVG: Ibu & Anak */}
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
               </svg>
@@ -195,39 +452,59 @@ ${rekomendasi}`;
               </p>
             </div>
           </div>
-          
-          <div className="flex space-x-1 bg-slate-100 p-1 rounded-xl">
+
+          <div className="flex items-center space-x-4">
+            {/* Info Kader */}
+            <div className="hidden md:flex flex-col items-end">
+              <span className="text-xs font-black text-slate-700">Halo, {currentUser.namaLengkap}</span>
+              <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Kader Desa Aktif</span>
+            </div>
+
+            {/* Switch Tabs */}
+            <div className="flex space-x-1 bg-slate-100 p-1 rounded-xl">
+              <button
+                onClick={() => {
+                  setActiveTab("dashboard");
+                  setResultData(null);
+                }}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  activeTab === "dashboard"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path>
+                </svg>
+                <span className="hidden sm:inline">Dasbor</span>
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("form");
+                  setResultData(null);
+                }}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  activeTab === "form"
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                </svg>
+                <span className="hidden sm:inline">Skrining Baru</span>
+              </button>
+            </div>
+
+            {/* Logout Button */}
             <button
-              onClick={() => {
-                setActiveTab("dashboard");
-                setResultData(null);
-              }}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                activeTab === "dashboard"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
+              onClick={handleLogout}
+              title="Keluar Sesi"
+              className="p-2 text-slate-400 hover:text-rose-500 bg-slate-100 hover:bg-rose-50 rounded-xl transition-all"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
               </svg>
-              <span>Dasbor</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab("form");
-                setResultData(null);
-              }}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                activeTab === "form"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
-              </svg>
-              <span>Skrining Baru</span>
             </button>
           </div>
         </div>
@@ -251,7 +528,7 @@ ${rekomendasi}`;
               Deteksi Dini Risiko Preeklampsia untuk Keselamatan Ibu & Bayi
             </h2>
             <p className="text-sm md:text-base text-rose-50/90 mt-2 font-medium">
-              Gunakan alat bantu skrining ini untuk melakukan diagnosis awal preeklampsia pada ibu hamil secara cepat dan akurat berdasarkan parameter tekanan darah, usia, indeks massa tubuh, serta status kehamilan.
+              Selamat bekerja, **{currentUser.namaLengkap}**. Gunakan alat bantu skrining ini untuk mendeteksi preeklampsia dini pada ibu hamil secara cepat dan bagikan laporan langsung ke Bidan Desa melalui WhatsApp.
             </p>
           </div>
         </div>
@@ -312,7 +589,7 @@ ${rekomendasi}`;
                 </div>
 
                 {/* Search and Filters */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-slate-stretch sm:items-center gap-3">
                   {/* Search Input */}
                   <div className="relative">
                     <input
@@ -375,7 +652,7 @@ ${rekomendasi}`;
                         <th className="py-4 px-4">IMT</th>
                         <th className="py-4 px-4">Status Gravida</th>
                         <th className="py-4 px-6">Status Risiko</th>
-                        <th className="py-4 px-6">Kriteria Pemicu</th>
+                        <th className="py-4 px-6">Kader Pemeriksa</th>
                         <th className="py-4 px-6 text-right">Tanggal Skrining</th>
                         <th className="py-4 px-6 text-center">Aksi</th>
                       </tr>
@@ -414,8 +691,8 @@ ${rekomendasi}`;
                               <span>{item.statusRisiko}</span>
                             </span>
                           </td>
-                          <td className="py-4 px-6 max-w-xs truncate text-xs text-slate-400" title={item.kriteriaPemicu}>
-                            {item.kriteriaPemicu}
+                          <td className="py-4 px-6 text-xs text-slate-600 font-semibold">
+                            {item.kader?.namaLengkap || "Sistem"}
                           </td>
                           <td className="py-4 px-6 text-right font-medium text-slate-400">
                             {new Date(item.createdAt).toLocaleDateString("id-ID", {

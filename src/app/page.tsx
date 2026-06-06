@@ -530,6 +530,15 @@ ${rekomendasi}`;
             <p className="text-sm md:text-base text-rose-50/90 mt-2 font-medium">
               Selamat bekerja, **{currentUser.namaLengkap}**. Gunakan alat bantu skrining ini untuk mendeteksi preeklampsia dini pada ibu hamil secara cepat dan bagikan laporan langsung ke Bidan Desa melalui WhatsApp.
             </p>
+            <button
+              onClick={() => setActiveTab("form")}
+              className="mt-5 px-5 py-2.5 bg-white text-rose-600 hover:bg-rose-50 font-bold text-sm rounded-xl shadow-md transition-all flex items-center space-x-1.5 cursor-pointer inline-flex"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
+              </svg>
+              <span>Mulai Skrining Baru</span>
+            </button>
           </div>
         </div>
 
@@ -589,7 +598,16 @@ ${rekomendasi}`;
                 </div>
 
                 {/* Search and Filters */}
-                <div className="flex flex-col sm:flex-row items-slate-stretch sm:items-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <button
+                    onClick={() => setActiveTab("form")}
+                    className="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white font-bold text-sm rounded-xl shadow-md shadow-rose-100 transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>Skrining Baru</span>
+                  </button>
                   {/* Search Input */}
                   <div className="relative">
                     <input

@@ -273,6 +273,36 @@ ${rekomendasi}`;
   const totalRisikoTinggi = history.filter((item) => item.statusRisiko === "Risiko Tinggi").length;
   const totalAman = history.filter((item) => item.statusRisiko === "Aman").length;
 
+  // Hitung detail statistik untuk visualisasi dasbor
+  let countHipertensi = 0;
+  let countUsia = 0;
+  let countIMT = 0;
+  let countGravida = 0;
+  let countJarak = 0;
+
+  let ageUnder20 = 0;
+  let age20To34 = 0;
+  let age35AndOver = 0;
+
+  history.forEach((item) => {
+    // Kelompok Usia
+    if (item.usia < 20) ageUnder20++;
+    else if (item.usia <= 34) age20To34++;
+    else age35AndOver++;
+
+    // Pemicu Risiko (Hanya jika berstatus Risiko Tinggi)
+    if (item.statusRisiko === "Risiko Tinggi") {
+      if (item.sistolik >= 160 || item.diastolik >= 90) countHipertensi++;
+      if (item.usia >= 35) countUsia++;
+      if (item.imt > 30) countIMT++;
+      if (item.isFirstPregnancy) countGravida++;
+      if (!item.isFirstPregnancy && item.jarakKehamilan !== null && item.jarakKehamilan > 10) countJarak++;
+    }
+  });
+
+  const pctRisikoTinggi = totalSkrining > 0 ? Math.round((totalRisikoTinggi / totalSkrining) * 100) : 0;
+  const pctAman = totalSkrining > 0 ? Math.round((totalAman / totalSkrining) * 100) : 0;
+
   // Filter history berdasarkan pencarian dan filter risiko
   const filteredHistory = history.filter((item) => {
     const matchesSearch = item.namaIbu.toLowerCase().includes(searchQuery.toLowerCase());
@@ -528,17 +558,8 @@ ${rekomendasi}`;
               Deteksi Dini Risiko Preeklampsia untuk Keselamatan Ibu & Bayi
             </h2>
             <p className="text-sm md:text-base text-rose-50/90 mt-2 font-medium">
-              Selamat bekerja, **{currentUser.namaLengkap}**. Gunakan alat bantu skrining ini untuk mendeteksi preeklampsia dini pada ibu hamil secara cepat dan bagikan laporan langsung ke Bidan Desa melalui WhatsApp.
+              Selamat bekerja, **{currentUser.namaLengkap}**. Deteksi dini risiko preeklampsia secara cepat dan bagikan laporan ke Bidan Desa.
             </p>
-            <button
-              onClick={() => setActiveTab("form")}
-              className="mt-5 px-5 py-2.5 bg-white text-rose-600 hover:bg-rose-50 font-bold text-sm rounded-xl shadow-md transition-all flex items-center space-x-1.5 cursor-pointer inline-flex"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path>
-              </svg>
-              <span>Mulai Skrining Baru</span>
-            </button>
           </div>
         </div>
 
@@ -588,6 +609,216 @@ ${rekomendasi}`;
                 </div>
               </div>
             </div>
+
+            {/* Analisis & Statistik Deteksi Dini */}
+            {totalSkrining > 0 && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+                {/* Proporsi Hasil (Donut Chart SVG) */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between items-center min-h-[300px]">
+                  <div className="w-full text-left">
+                    <h4 className="text-sm font-bold text-slate-800">Proporsi Hasil Skrining</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Persentase status risiko pasien</p>
+                  </div>
+                  
+                  {/* SVG Donut Chart */}
+                  <div className="relative w-36 h-36 flex items-center justify-center my-4">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                      {/* Background circle */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="transparent"
+                        stroke="#f1f5f9"
+                        strokeWidth="12"
+                      />
+                      {/* Aman Circle (Emerald) */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="transparent"
+                        stroke="#10b981"
+                        strokeWidth="12"
+                        strokeDashoffset={0}
+                        strokeDasharray={`${314.16 * (pctAman / 100)} 314.16`}
+                        strokeLinecap="round"
+                        className="transition-all duration-1000 ease-out"
+                      />
+                      {/* Risiko Tinggi Circle (Rose) */}
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="50"
+                        fill="transparent"
+                        stroke="#f43f5e"
+                        strokeWidth="12"
+                        strokeDasharray={`${314.16 * (pctRisikoTinggi / 100)} 314.16`}
+                        strokeDashoffset={-314.16 * (pctAman / 100)}
+                        strokeLinecap="round"
+                        className="transition-all duration-1000 ease-out"
+                      />
+                    </svg>
+                    <div className="absolute flex flex-col items-center justify-center text-center">
+                      <span className="text-2xl font-black text-slate-800">{totalSkrining}</span>
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pasien</span>
+                    </div>
+                  </div>
+
+                  <div className="w-full flex items-center justify-center gap-6 mt-2 text-xs font-semibold">
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                      <span className="text-slate-600">Aman ({pctAman}%)</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                      <span className="text-slate-600">Risiko ({pctRisikoTinggi}%)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pemicu Risiko Terbanyak (Progress Bars) */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[300px]">
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800">Faktor Risiko Terbanyak</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Faktor pemicu risiko tinggi terdeteksi</p>
+                  </div>
+                  
+                  <div className="space-y-2.5 my-3">
+                    {/* Faktor 1: Hipertensi */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span>Tekanan Darah Tinggi</span>
+                        <span className="text-rose-500 font-semibold">{countHipertensi} Kasus</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-1000"
+                          style={{ width: `${totalRisikoTinggi > 0 ? (countHipertensi / totalRisikoTinggi) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Faktor 2: Usia Berisiko */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span>Usia Ibu ≥35 Tahun</span>
+                        <span className="text-rose-500 font-semibold">{countUsia} Kasus</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-1000"
+                          style={{ width: `${totalRisikoTinggi > 0 ? (countUsia / totalRisikoTinggi) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Faktor 3: Obesitas */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span>IMT Obesitas (&gt;30)</span>
+                        <span className="text-rose-500 font-semibold">{countIMT} Kasus</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-1000"
+                          style={{ width: `${totalRisikoTinggi > 0 ? (countIMT / totalRisikoTinggi) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Faktor 4: Kehamilan Pertama */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span>Kehamilan Pertama</span>
+                        <span className="text-rose-500 font-semibold">{countGravida} Kasus</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-1000"
+                          style={{ width: `${totalRisikoTinggi > 0 ? (countGravida / totalRisikoTinggi) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Faktor 5: Jarak Kehamilan */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span>Jarak Kehamilan &gt;10 Tahun</span>
+                        <span className="text-rose-500 font-semibold">{countJarak} Kasus</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-1000"
+                          style={{ width: `${totalRisikoTinggi > 0 ? (countJarak / totalRisikoTinggi) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Distribusi Kelompok Usia (Horizontal Bar Chart) */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col justify-between min-h-[300px]">
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-800">Distribusi Usia Ibu</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">Persebaran umur pasien yang diperiksa</p>
+                  </div>
+                  
+                  <div className="space-y-4 my-3">
+                    {/* Kelompok 1: Sangat Muda (<20) */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span className="flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-sky-400"></span>
+                          <span>Remaja (&lt;20 Th)</span>
+                        </span>
+                        <span>{ageUnder20} Pasien ({totalSkrining > 0 ? Math.round((ageUnder20 / totalSkrining) * 100) : 0}%)</span>
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded-lg overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-sky-400 to-blue-500 rounded-lg transition-all duration-1000"
+                          style={{ width: `${totalSkrining > 0 ? (ageUnder20 / totalSkrining) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Kelompok 2: Usia Ideal (20-34) */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span className="flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                          <span>Ideal (20-34 Th)</span>
+                        </span>
+                        <span>{age20To34} Pasien ({totalSkrining > 0 ? Math.round((age20To34 / totalSkrining) * 100) : 0}%)</span>
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded-lg overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-lg transition-all duration-1000"
+                          style={{ width: `${totalSkrining > 0 ? (age20To34 / totalSkrining) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    {/* Kelompok 3: Berisiko (>=35) */}
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs font-bold text-slate-700">
+                        <span className="flex items-center space-x-1.5">
+                          <span className="w-2 h-2 rounded-full bg-rose-400"></span>
+                          <span>Berisiko (≥35 Th)</span>
+                        </span>
+                        <span>{age35AndOver} Pasien ({totalSkrining > 0 ? Math.round((age35AndOver / totalSkrining) * 100) : 0}%)</span>
+                      </div>
+                      <div className="h-3 bg-slate-100 rounded-lg overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-rose-400 to-pink-500 rounded-lg transition-all duration-1000"
+                          style={{ width: `${totalSkrining > 0 ? (age35AndOver / totalSkrining) * 100 : 0}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* List & Riwayat Tabel */}
             <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">

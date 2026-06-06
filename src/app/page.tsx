@@ -134,32 +134,29 @@ export default function Home() {
   };
 
   const kirimWhatsApp = (data: Skrining) => {
-    const statusEmoji = data.statusRisiko === "Risiko Tinggi" ? "🔴 RISIKO TINGGI" : "🟢 AMAN";
-    const statusRekomendasi = data.statusRisiko === "Risiko Tinggi" 
-      ? "*Segera rujuk ke Puskesmas / Bidan Desa untuk penanganan darurat.*" 
-      : "*Sarankan pemeriksaan kehamilan rutin minimal 6 kali.*";
+    const isRisiko = data.statusRisiko === "Risiko Tinggi";
+    const header = isRisiko 
+      ? "🚨 *PEMBERITAHUAN SKRINING PREEKLAMPSIA* 🚨" 
+      : "ℹ️ *LAPORAN SKRINING PREEKLAMPSIA* ℹ️";
       
-    const gravidaInfo = data.isFirstPregnancy 
-      ? "Kehamilan Pertama (Nulipara)" 
-      : `Kehamilan Kedua atau Lebih (Jarak kehamilan: ${data.jarakKehamilan} tahun)`;
+    const statusText = isRisiko ? "🔴 *RISIKO TINGGI*" : "🟢 *AMAN*";
+    
+    const rekomendasi = isRisiko 
+      ? "*Rujukan:* Segera rujuk ke Puskesmas / Bidan Desa terdekat." 
+      : "*Saran:* Lakukan kontrol kehamilan rutin ke Posyandu.";
 
-    const text = `*LAPORAN SKRINING PREEKLAMPSIA (MomCare Connect)*
+    const pemicuSection = isRisiko 
+      ? `\n• *Pemicu:* ${data.kriteriaPemicu.replace(/;/g, ", ")}`
+      : "";
 
-*Data Ibu Hamil:*
-• *Nama:* ${data.namaIbu}
-• *Usia:* ${data.usia} Tahun
-• *Tekanan Darah:* ${data.sistolik}/${data.diastolik} mmHg
-• *IMT Sebelum Hamil:* ${data.imt}
-• *Status Kehamilan:* ${gravidaInfo}
+    const text = `${header}
+*MomCare Connect*
 
-*Hasil Skrining:*
-• *Status Risiko:* ${statusEmoji}
-• *Kriteria Terdeteksi:* ${data.statusRisiko === "Risiko Tinggi" ? data.kriteriaPemicu.replace(/;/g, "\n  - ") : "Tidak ada"}
+• *Nama:* ${data.namaIbu} (${data.usia} th)
+• *Hasil:* ${statusText}
+• *Kondisi:* TD ${data.sistolik}/${data.diastolik} mmHg, IMT ${data.imt}${pemicuSection}
 
-*Rekomendasi Tindakan:*
-${statusRekomendasi}
-
-_Dikirim via MomCare Connect_`;
+${rekomendasi}`;
 
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");

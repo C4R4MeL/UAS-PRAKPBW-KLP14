@@ -34,6 +34,11 @@ export default function Home() {
   const [jarakKehamilan, setJarakKehamilan] = useState("");
   const [imt, setImt] = useState("");
 
+  // BMI Helper States
+  const [showBmiHelper, setShowBmiHelper] = useState(false);
+  const [beratBadan, setBeratBadan] = useState("");
+  const [tinggiBadan, setTinggiBadan] = useState("");
+
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [riskFilter, setRiskFilter] = useState("All");
@@ -109,6 +114,23 @@ export default function Home() {
     setIsFirstPregnancy(true);
     setJarakKehamilan("");
     setImt("");
+    setShowBmiHelper(false);
+    setBeratBadan("");
+    setTinggiBadan("");
+  };
+
+  const hitungIMT = () => {
+    const bb = parseFloat(beratBadan);
+    const tb = parseFloat(tinggiBadan) / 100; // ubah ke meter
+    if (!isNaN(bb) && !isNaN(tb) && tb > 0) {
+      const calculatedImt = bb / (tb * tb);
+      setImt(calculatedImt.toFixed(1));
+      setShowBmiHelper(false);
+      setBeratBadan("");
+      setTinggiBadan("");
+    } else {
+      alert("Masukkan berat badan (kg) dan tinggi badan (cm) yang valid.");
+    }
   };
 
   // Hitung statistik
@@ -126,7 +148,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-rose-500 selection:text-white pb-12">
       {/* Header Premium */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 via-pink-500 to-violet-600 flex items-center justify-center text-white font-bold shadow-md shadow-rose-200">
@@ -434,25 +456,75 @@ export default function Home() {
                   </div>
 
                   {/* IMT */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <div className="flex justify-between items-center">
                       <label htmlFor="imt" className="block text-sm font-bold text-slate-700">
                         Indeks Massa Tubuh (IMT) Sebelum Hamil
                       </label>
-                      <span className="text-[10px] text-slate-400 font-medium italic">imt &gt; 30 = Obesitas</span>
+                      <button
+                        type="button"
+                        onClick={() => setShowBmiHelper(!showBmiHelper)}
+                        className="text-xs text-rose-500 hover:text-rose-600 font-bold focus:outline-none flex items-center space-x-1"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>{showBmiHelper ? "Tutup Kalkulator" : "Kalkulator IMT"}</span>
+                      </button>
                     </div>
-                    <input
-                      type="number"
-                      id="imt"
-                      required
-                      step="0.1"
-                      min="10"
-                      max="60"
-                      placeholder="Contoh: 24.5"
-                      value={imt}
-                      onChange={(e) => setImt(e.target.value)}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
-                    />
+                    
+                    {showBmiHelper ? (
+                      <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 shadow-inner animate-fadeIn">
+                        <p className="text-xs font-bold text-slate-600">Hitung IMT dari Berat & Tinggi Badan</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="block text-[10px] font-bold text-slate-500">Berat Badan (kg)</label>
+                            <input
+                              type="number"
+                              placeholder="e.g. 60"
+                              value={beratBadan}
+                              onChange={(e) => setBeratBadan(e.target.value)}
+                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="block text-[10px] font-bold text-slate-500">Tinggi Badan (cm)</label>
+                            <input
+                              type="number"
+                              placeholder="e.g. 158"
+                              value={tinggiBadan}
+                              onChange={(e) => setTinggiBadan(e.target.value)}
+                              className="w-full px-3 py-2 text-xs border border-slate-200 bg-white rounded-lg focus:outline-none focus:ring-1 focus:ring-rose-500"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={hitungIMT}
+                          className="w-full py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-colors"
+                        >
+                          Hitung & Isi Otomatis
+                        </button>
+                      </div>
+                    ) : (
+                      <input
+                        type="number"
+                        id="imt"
+                        required
+                        step="0.1"
+                        min="10"
+                        max="60"
+                        placeholder="Contoh: 24.5"
+                        value={imt}
+                        onChange={(e) => setImt(e.target.value)}
+                        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm"
+                      />
+                    )}
+                    {!showBmiHelper && (
+                      <p className="text-[10px] text-slate-400 mt-1">
+                        *IMT dihitung dengan rumus: Berat Badan (kg) / (Tinggi Badan (m))²
+                      </p>
+                    )}
                   </div>
                 </div>
 

@@ -75,9 +75,9 @@ export default function LandingPage({
             <div>
               <button
                 onClick={scrollToLogin}
-                className="px-4 py-2 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-all shadow-sm flex items-center space-x-1.5"
+                className="px-5 py-2.5 text-xs font-extrabold text-white bg-gradient-to-r from-rose-500 via-pink-500 to-violet-600 hover:opacity-90 active:scale-95 rounded-xl transition-all shadow-md shadow-rose-200/50 hover:shadow-none flex items-center space-x-1.5 cursor-pointer"
               >
-                <span>Masuk Sesi</span>
+                <span>Akses Portal Kader 🔐</span>
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
@@ -132,52 +132,52 @@ export default function LandingPage({
             </div>
 
             {/* Visualisasi Dashboard Mini (Mockup Premium) */}
-            <div className="lg:col-span-5 relative w-full flex justify-center">
-              <div className="w-full max-w-sm bg-slate-900 rounded-3xl p-6 shadow-2xl border border-slate-800 text-white relative animate-scaleUp overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-rose-500 to-transparent opacity-20 blur-2xl rounded-full"></div>
+            <div className="lg:col-span-5 relative w-full flex justify-center animate-scaleUp">
+              <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-xl border border-slate-100 text-slate-800 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-rose-500/10 to-transparent blur-2xl rounded-full"></div>
                 
                 {/* Header Mockup */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center space-x-2">
                     <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div>
-                    <span className="text-xs font-bold text-slate-400">Dashboard Kader (Live)</span>
+                    <span className="text-xs font-bold text-slate-500">Dashboard Kader (Live)</span>
                   </div>
-                  <span className="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-semibold">MomCare v1.0</span>
+                  <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-semibold">MomCare v1.0</span>
                 </div>
 
                 {/* Dashboard Stats */}
                 <div className="grid grid-cols-2 gap-3 my-5">
-                  <div className="bg-slate-800/50 border border-slate-800 p-3.5 rounded-2xl">
+                  <div className="bg-slate-50/80 border border-slate-100 p-3.5 rounded-2xl">
                     <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Total Skrining</span>
-                    <span className="text-2xl font-black bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent">38</span>
-                    <span className="text-[9px] text-emerald-400 block font-semibold mt-1">✓ Berhasil disimpan</span>
+                    <span className="text-2xl font-black bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">38</span>
+                    <span className="text-[9px] text-emerald-600 font-semibold mt-1">✓ Berhasil disimpan</span>
                   </div>
-                  <div className="bg-slate-800/50 border border-slate-800 p-3.5 rounded-2xl">
+                  <div className="bg-slate-50/80 border border-slate-100 p-3.5 rounded-2xl">
                     <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">Risiko Tinggi</span>
                     <span className="text-2xl font-black text-rose-500">6</span>
-                    <span className="text-[9px] text-rose-300 block font-semibold mt-1">⚠️ Butuh rujukan</span>
+                    <span className="text-[9px] text-rose-500 block font-semibold mt-1">⚠️ Butuh rujukan</span>
                   </div>
                 </div>
 
                 {/* Mini Chart Mockup */}
-                <div className="space-y-3 bg-slate-850 p-3.5 rounded-2xl border border-slate-800/80">
+                <div className="space-y-3 bg-slate-50/50 p-3.5 rounded-2xl border border-slate-100">
                   <span className="text-[10px] text-slate-400 block font-bold">FAKTOR RISIKO TERDETEKSI</span>
                   <div className="space-y-2 text-xs">
                     <div>
-                      <div className="flex justify-between text-[10px] mb-0.5 text-slate-300 font-semibold">
+                      <div className="flex justify-between text-[10px] mb-0.5 text-slate-600 font-semibold">
                         <span>Hipertensi Kehamilan (TD ≥ 140/90)</span>
-                        <span className="text-rose-400 font-bold">5 Ibu</span>
+                        <span className="text-rose-500 font-bold">5 Ibu</span>
                       </div>
-                      <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                         <div className="bg-rose-500 h-full rounded-full" style={{ width: "80%" }}></div>
                       </div>
                     </div>
                     <div>
-                      <div className="flex justify-between text-[10px] mb-0.5 text-slate-300 font-semibold">
+                      <div className="flex justify-between text-[10px] mb-0.5 text-slate-600 font-semibold">
                         <span>Usia Rentan (&lt;20 atau &gt;35 tahun)</span>
-                        <span className="text-amber-400 font-bold">3 Ibu</span>
+                        <span className="text-amber-500 font-bold">3 Ibu</span>
                       </div>
-                      <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
                         <div className="bg-amber-500 h-full rounded-full" style={{ width: "50%" }}></div>
                       </div>
                     </div>

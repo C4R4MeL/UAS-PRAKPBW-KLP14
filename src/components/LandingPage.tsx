@@ -249,7 +249,7 @@ export default function LandingPage({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
             {/* Tampilan Visual Kartu Klasifikasi (LHS - 7 Cols) */}
             <div className="lg:col-span-7 space-y-6">
@@ -308,16 +308,50 @@ export default function LandingPage({
                   <span className="text-[9px] text-slate-400 font-bold uppercase block tracking-widest">Tensi (mmHg)</span>
                 </div>
               </div>
+              {/* Kartu Parameter Sistem Pakar (LHS - Card 3) */}
+              <div className="bg-white rounded-3xl p-6 shadow-md border-l-8 border-violet-500 border-y border-r border-slate-100 flex flex-col gap-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-violet-500/5 to-transparent blur-xl rounded-full"></div>
+                <div className="space-y-3 relative z-10">
+                  <div className="inline-flex items-center space-x-2 bg-violet-50 border border-violet-100 text-violet-600 px-3 py-1 rounded-full text-xs font-bold">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <span>📋 PARAMETER CLINICAL PENAPISAN</span>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-slate-900">Acuan Keputusan Klinis Sistem Pakar</h4>
+                    <p className="text-xs text-slate-500">Sistem mengklasifikasikan risiko tinggi jika ibu hamil memenuhi salah satu kriteria utama:</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-xs text-slate-600">
+                    <div className="bg-violet-50/30 p-2.5 rounded-xl border border-violet-100/30">
+                      <span className="text-[10px] font-bold text-violet-600 block uppercase tracking-wider mb-0.5">1. Tekanan Darah</span>
+                      <p className="text-[11px] leading-relaxed">Sistolik &ge; 140 mmHg atau Diastolik &ge; 90 mmHg.</p>
+                    </div>
+                    <div className="bg-violet-50/30 p-2.5 rounded-xl border border-violet-100/30">
+                      <span className="text-[10px] font-bold text-violet-600 block uppercase tracking-wider mb-0.5">2. Usia Ibu Hamil</span>
+                      <p className="text-[11px] leading-relaxed">Usia hamil rentan yaitu di bawah 20 tahun atau di atas 35 tahun.</p>
+                    </div>
+                    <div className="bg-violet-50/30 p-2.5 rounded-xl border border-violet-100/30">
+                      <span className="text-[10px] font-bold text-violet-600 block uppercase tracking-wider mb-0.5">3. Indeks Massa Tubuh</span>
+                      <p className="text-[11px] leading-relaxed">IMT sebelum hamil &gt; 30 (Kategori Obesitas Gestasional).</p>
+                    </div>
+                    <div className="bg-violet-50/30 p-2.5 rounded-xl border border-violet-100/30">
+                      <span className="text-[10px] font-bold text-violet-600 block uppercase tracking-wider mb-0.5">4. Paritas & Jarak</span>
+                      <p className="text-[11px] leading-relaxed">Hamil pertama (nulipara) atau jarak kehamilan sebelumnya &gt; 10 tahun.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Tiruan Bubble Pesan WhatsApp (RHS - 5 Cols) */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="lg:col-span-5 flex flex-col">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tiruan Laporan Rujukan WhatsApp</h3>
-              <div className="bg-emerald-100/60 rounded-3xl p-5 border border-emerald-200/50 shadow-md relative overflow-hidden">
+              <div className="bg-emerald-100/60 rounded-3xl p-5 border border-emerald-200/50 shadow-md relative overflow-hidden flex-1 flex flex-col">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-xl rounded-full"></div>
                 
                 {/* Header WhatsApp Bar */}
-                <div className="flex items-center space-x-3 pb-3 border-b border-emerald-200/60 mb-4">
+                <div className="flex items-center space-x-3 pb-3 border-b border-emerald-200/60 mb-4 flex-shrink-0">
                   <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white">
                     <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M12.012 2c-5.506 0-9.97 4.463-9.97 9.969 0 1.936.556 3.737 1.507 5.275l-1.549 5.666 5.821-1.527c1.472.802 3.16 1.258 4.957 1.258 5.505 0 9.97-4.463 9.97-9.969s-4.465-9.972-9.97-9.972zm5.727 14.152c-.246.696-1.432 1.353-1.954 1.409-.475.051-.954.249-3.045-.615-2.617-1.077-4.288-3.771-4.417-3.945-.132-.172-1.054-1.405-1.054-2.679 0-1.275.665-1.902.902-2.148.236-.247.519-.307.69-.307.172 0 .344.002.493.009.155.008.363-.058.568.441.21.507.712 1.737.773 1.861.062.124.103.268.021.433-.082.164-.124.268-.246.411-.124.144-.262.32-.375.43-.124.12-.254.25-.11.498.145.247.643 1.057 1.381 1.716.954.85 1.75 1.114 1.996 1.238.246.124.391.103.536-.062.144-.165.624-.725.793-.973.167-.247.337-.206.568-.124.23.082 1.464.69 1.716.814.253.124.423.186.485.293.062.108.062.623-.184 1.319z"></path>
@@ -329,34 +363,63 @@ export default function LandingPage({
                   </div>
                 </div>
 
-                {/* Bubble Message */}
-                <div className="bg-white rounded-2xl rounded-tl-none p-3.5 shadow-sm border border-emerald-100 text-xs font-mono whitespace-pre-line text-slate-700 leading-relaxed">
-                  <strong>*MOMCARE CONNECT - LAPORAN PENAPISAN*</strong>
-                  {"\n"}--------------------------------------------------
-                  {"\n"}<strong>Kader:</strong> Bidan Dwi Lestari
-                  {"\n"}<strong>Tanggal:</strong> 7 Juni 2026
-                  {"\n"}
-                  {"\n"}<strong>*Identitas Ibu Hamil:*</strong>
-                  {"\n"}- Nama: Ny. Rahmawati
-                  {"\n"}- Usia: 36 Tahun
-                  {"\n"}
-                  {"\n"}<strong>*Hasil Pemeriksaan:*</strong>
-                  {"\n"}- Tensi: 145/95 mmHg (Hipertensi)
-                  {"\n"}- IMT: 28.4
-                  {"\n"}- Hamil Pertama: Ya
-                  {"\n"}
-                  {"\n"}<strong>*STATUS: RISIKO TINGGI PREEKLAMPSIA*</strong>
-                  {"\n"}<strong>*Kriteria Pemicu:*</strong>
-                  {"\n"}- Usia Ibu Hamil Rentan (&gt;35 tahun)
-                  {"\n"}- Tekanan Darah Tinggi (Sistolik ≥ 140 atau Diastolik ≥ 90)
-                  {"\n"}- Kehamilan Pertama (Nulipara)
-                  {"\n"}
-                  {"\n"}<strong>*Rekomendasi:*</strong>
-                  {"\n"}Mohon tindak lanjut Bidan Desa/Puskesmas. Ibu hamil disarankan untuk pemeriksaan protein urine dan pemantauan ketat.
+                {/* Scrollable Chat Area */}
+                <div className="flex-1 overflow-y-auto space-y-4 pr-1 max-h-[550px] scrollbar-thin scrollbar-thumb-emerald-200">
+                  
+                  {/* Bubble 1: Ny. Rahmawati (Risiko Tinggi) */}
+                  <div className="bg-white rounded-2xl rounded-tl-none p-3.5 shadow-sm border border-emerald-100 text-[11px] font-mono whitespace-pre-line text-slate-700 leading-relaxed">
+                    *MOMCARE CONNECT - LAPORAN PENAPISAN*
+                    {"\n"}------------------------------------
+                    {"\n"}Kader: Bidan Dwi Lestari
+                    {"\n"}Tanggal: 7 Juni 2026
+                    {"\n"}
+                    {"\n"}*Identitas Ibu Hamil:*
+                    {"\n"}- Nama: Ny. Rahmawati
+                    {"\n"}- Usia: 36 Tahun
+                    {"\n"}
+                    {"\n"}*Hasil Pemeriksaan:*
+                    {"\n"}- Tensi: 145/95 mmHg (Hipertensi)
+                    {"\n"}- IMT: 28.4
+                    {"\n"}- Hamil Pertama: Ya
+                    {"\n"}
+                    {"\n"}*STATUS: RISIKO TINGGI PREEKLAMPSIA*
+                    {"\n"}*Kriteria Pemicu:*
+                    {"\n"}- Usia Ibu Hamil Rentan (&gt;35 tahun)
+                    {"\n"}- Tekanan Darah Tinggi (Sistolik &ge; 140 atau Diastolik &ge; 90)
+                    {"\n"}- Kehamilan Pertama (Nulipara)
+                    {"\n"}
+                    {"\n"}*Rekomendasi:*
+                    {"\n"}Mohon tindak lanjut Bidan Desa/Puskesmas. Ibu hamil disarankan untuk pemeriksaan protein urine dan pemantauan ketat.
+                  </div>
+
+                  {/* Bubble 2: Ny. Anita (Aman / Risiko Rendah) */}
+                  <div className="bg-white rounded-2xl rounded-tl-none p-3.5 shadow-sm border border-emerald-100 text-[11px] font-mono whitespace-pre-line text-slate-700 leading-relaxed">
+                    *MOMCARE CONNECT - LAPORAN PENAPISAN*
+                    {"\n"}------------------------------------
+                    {"\n"}Kader: Bidan Dwi Lestari
+                    {"\n"}Tanggal: 7 Juni 2026
+                    {"\n"}
+                    {"\n"}*Identitas Ibu Hamil:*
+                    {"\n"}- Nama: Ny. Anita
+                    {"\n"}- Usia: 28 Tahun
+                    {"\n"}
+                    {"\n"}*Hasil Pemeriksaan:*
+                    {"\n"}- Tensi: 118/75 mmHg (Normal)
+                    {"\n"}- IMT: 22.1
+                    {"\n"}- Hamil Pertama: Tidak (Jarak Kehamilan: 3 Tahun)
+                    {"\n"}
+                    {"\n"}*STATUS: AMAN / RISIKO RENDAH*
+                    {"\n"}*Kriteria Pemicu:*
+                    {"\n"}- Tidak ada kriteria risiko terpenuhi
+                    {"\n"}
+                    {"\n"}*Rekomendasi:*
+                    {"\n"}Edukasi gizi seimbang, ingatkan jadwal kontrol rutin ke Posyandu, serta pertahankan gaya hidup sehat.
+                  </div>
+
                 </div>
                 
-                <div className="mt-3 text-[10px] text-emerald-700 font-bold text-center">
-                  📱 Laporan di atas dihasilkan otomatis untuk memudahkan Kader merujuk ibu hamil.
+                <div className="mt-auto pt-3 border-t border-emerald-200/40 text-[10px] text-emerald-700 font-bold text-center flex-shrink-0">
+                  📱 Format pesan di atas sesuai dengan laporan rujukan asli yang dikirimkan ke WhatsApp Bidan.
                 </div>
               </div>
             </div>

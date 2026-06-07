@@ -1,29 +1,65 @@
 import { Skrining, DashboardStats } from "./types";
 
-// Fungsi kirim laporan skrining ke WhatsApp
 export const kirimWhatsApp = (data: Skrining) => {
   const isRisiko = data.statusRisiko === "Risiko Tinggi";
-  const header = isRisiko 
-    ? "🚨 *PEMBERITAHUAN SKRINING PREEKLAMPSIA* 🚨" 
-    : "ℹ️ *LAPORAN SKRINING PREEKLAMPSIA* ℹ️";
-    
-  const statusText = isRisiko ? "🔴 *RISIKO TINGGI*" : "🟢 *AMAN*";
+  const kaderName = data.kader?.namaLengkap || "Kader Kesehatan";
+  const tanggal = new Date(data.createdAt).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
   
-  const rekomendasi = isRisiko 
-    ? "*Rujukan:* Segera rujuk ke Puskesmas / Bidan Desa terdekat." 
-    : "*Saran:* Lakukan kontrol kehamilan rutin ke Posyandu.";
+  const tensiStatus = (data.sistolik >= 140 || data.diastolik >= 90) ? "Hipertensi" : "Normal";
+  
+  const statusText = isRisiko 
+    ? "RISIKO TINGGI PREEKLAMPSIA" 
+    : "AMAN / RISIKO RENDAH";
+    
+  // Format kriteria pemicu dengan bullet point
+  const pemicuText = isRisiko
+    ? data.kriteriaPemicu.split("; ").map(c => {
+        if (c.toLowerCase().includes("tekanan darah")) {
+          return "- Tekanan Darah Tinggi (Sistolik ≥ 140 atau Diastolik ≥ 90)";
+        }
+        if (c.toLowerCase().includes("usia")) {
+          return "- Usia Ibu Hamil Rentan (>35 tahun)";
+        }
+        if (c.toLowerCase().includes("imt") || c.toLowerCase().includes("massa tubuh")) {
+          return "- Obesitas Gestasional (IMT > 30)";
+        }
+        if (c.toLowerCase().includes("kehamilan pertama") || c.toLowerCase().includes("nulipara")) {
+          return "- Kehamilan Pertama (Nulipara)";
+        }
+        if (c.toLowerCase().includes("jarak")) {
+          return "- Jarak Kehamilan > 10 Tahun";
+        }
+        return `- ${c}`;
+      }).join("\n")
+    : "- Tidak ada kriteria risiko terpenuhi";
+    
+  const rekomendasi = isRisiko
+    ? "Mohon tindak lanjut Bidan Desa/Puskesmas. Ibu hamil disarankan untuk pemeriksaan protein urine dan pemantauan ketat."
+    : "Edukasi gizi seimbang, ingatkan jadwal kontrol rutin ke Posyandu, serta pertahankan gaya hidup sehat.";
 
-  const pemicuSection = isRisiko 
-    ? `\n• *Pemicu:* ${data.kriteriaPemicu.replace(/;/g, ", ")}`
-    : "";
+  const text = `*MOMCARE CONNECT - LAPORAN PENAPISAN*
+------------------------------------
+Kader: ${kaderName}
+Tanggal: ${tanggal}
 
-  const text = `${header}
-*MomCare Connect*
+*Identitas Ibu Hamil:*
+- Nama: ${data.namaIbu}
+- Usia: ${data.usia} Tahun
 
-• *Nama:* ${data.namaIbu} (${data.usia} th)
-• *Hasil:* ${statusText}
-• *Kondisi:* TD ${data.sistolik}/${data.diastolik} mmHg, IMT ${data.imt}${pemicuSection}
+*Hasil Pemeriksaan:*
+- Tensi: ${data.sistolik}/${data.diastolik} mmHg (${tensiStatus})
+- IMT: ${data.imt}
+- Hamil Pertama: ${data.isFirstPregnancy ? "Ya" : `Tidak (Jarak Kehamilan: ${data.jarakKehamilan} Tahun)`}
 
+*STATUS: ${statusText}*
+*Kriteria Pemicu:*
+${pemicuText}
+
+*Rekomendasi:*
 ${rekomendasi}`;
 
   const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
@@ -57,7 +93,7 @@ export const computeStats = (history: Skrining[]): DashboardStats => {
 
     // Pemicu Risiko (Hanya jika berstatus Risiko Tinggi)
     if (item.statusRisiko === "Risiko Tinggi") {
-      if (item.sistolik >= 160 || item.diastolik >= 90) countHipertensi++;
+      if (item.sistolik >= 140 || item.diastolik >= 90) countHipertensi++;
       if (item.usia >= 35) countUsia++;
       if (item.imt > 30) countIMT++;
       if (item.isFirstPregnancy) countGravida++;

@@ -200,7 +200,7 @@ export default function SkriningForm({
                   required
                   min="50"
                   max="250"
-                  placeholder="Batas: 160"
+                  placeholder="Batas: 140"
                   value={sistolik}
                   onChange={(e) => setSistolik(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all shadow-sm text-center font-bold"
@@ -226,7 +226,7 @@ export default function SkriningForm({
               </div>
             </div>
             <p className="text-[10px] text-slate-400">
-              *Preeklampsia tinggi terpicu jika Sistolik ≥ 160 mmHg ATAU Diastolik ≥ 90 mmHg.
+              *Preeklampsia tinggi terpicu jika Sistolik ≥ 140 mmHg ATAU Diastolik ≥ 90 mmHg.
             </p>
           </div>
 

@@ -150,30 +150,26 @@ export async function POST(request: Request) {
     // Jalankan logika Sistem Pakar
     const triggeredCriteria: string[] = [];
 
-    // Kriteria 1: Tekanan darah diastolik >= 90 mmHg atau sistolik >= 160 mmHg
-    if (diasNum >= 90 || sysNum >= 160) {
-      triggeredCriteria.push(
-        `Tekanan darah tinggi (Sistolik: ${sysNum} mmHg / Diastolik: ${diasNum} mmHg, batas aman <160/<90 mmHg)`
-      );
+    // Kriteria 1: Tekanan darah diastolik >= 90 mmHg atau sistolik >= 140 mmHg
+    if (diasNum >= 90 || sysNum >= 140) {
+      triggeredCriteria.push("Tekanan Darah Tinggi (Sistolik ≥ 140 atau Diastolik ≥ 90)");
     }
 
     // Kriteria 2: Usia ibu >= 35 tahun
     if (ageNum >= 35) {
-      triggeredCriteria.push(`Usia ibu berisiko tinggi (Usia: ${ageNum} tahun, batas aman <35 tahun)`);
+      triggeredCriteria.push("Usia Ibu Hamil Rentan (>35 tahun)");
     }
 
     // Kriteria 3: IMT sebelum hamil > 30 (Menggunakan IMT yang disubmit)
     if (bmiNum > 30) {
-      triggeredCriteria.push(`Indeks Massa Tubuh (IMT) berlebih/obesitas (IMT: ${bmiNum}, batas aman ≤30)`);
+      triggeredCriteria.push("Obesitas Gestasional (IMT > 30)");
     }
 
     // Kriteria 4: Merupakan kehamilan pertama (nulipara) ATAU jarak kehamilan sebelumnya > 10 tahun
     if (firstPreg) {
-      triggeredCriteria.push("Kehamilan pertama (nulipara) merupakan faktor risiko preeklampsia");
+      triggeredCriteria.push("Kehamilan Pertama (Nulipara)");
     } else if (intervalNum !== null && intervalNum > 10) {
-      triggeredCriteria.push(
-        `Jarak kehamilan sebelumnya terlalu jauh (Jarak: ${intervalNum} tahun, batas aman ≤10 tahun)`
-      );
+      triggeredCriteria.push("Jarak Kehamilan > 10 Tahun");
     }
 
     // Klasifikasi status risiko

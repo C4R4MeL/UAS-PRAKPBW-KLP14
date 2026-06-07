@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     // Buat token JWT
     const token = jwt.sign(
-      { id: kader.id, username: kader.username, namaLengkap: kader.namaLengkap },
+      { id: kader.id, username: kader.username, namaLengkap: kader.namaLengkap, posyandu: kader.posyandu },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -64,6 +64,7 @@ export async function POST(request: Request) {
         id: kader.id,
         username: kader.username,
         namaLengkap: kader.namaLengkap,
+        posyandu: kader.posyandu,
       },
     });
 

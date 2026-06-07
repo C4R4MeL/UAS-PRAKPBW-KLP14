@@ -33,9 +33,23 @@ export async function GET() {
       );
     }
 
+    const dbKader = await prisma.kader.findUnique({
+      where: { id: kader.id },
+      select: { posyandu: true },
+    });
+
+    if (!dbKader) {
+      return NextResponse.json(
+        { success: false, error: "Akun kader tidak valid." },
+        { status: 401 }
+      );
+    }
+
     const history = await prisma.skrining.findMany({
       where: {
-        kaderId: kader.id,
+        kader: {
+          posyandu: dbKader.posyandu,
+        },
       },
       orderBy: {
         createdAt: "desc",

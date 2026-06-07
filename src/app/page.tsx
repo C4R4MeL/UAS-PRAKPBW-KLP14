@@ -50,6 +50,8 @@ export default function Home() {
         setAuthPassword={auth.setAuthPassword}
         authNamaLengkap={auth.authNamaLengkap}
         setAuthNamaLengkap={auth.setAuthNamaLengkap}
+        authPosyandu={auth.authPosyandu}
+        setAuthPosyandu={auth.setAuthPosyandu}
         authError={auth.authError}
         setAuthError={auth.setAuthError}
         authSuccess={auth.authSuccess}
@@ -66,6 +68,7 @@ export default function Home() {
       {/* Header Premium */}
       <AppHeader
         namaLengkap={auth.currentUser.namaLengkap}
+        posyandu={auth.currentUser.posyandu}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         setResultData={() => skrining.setResultData(null)}

@@ -17,6 +17,7 @@ model Kader {
   username    String     @unique
   namaLengkap String
   password    String
+  posyandu    String     @default("Posyandu Sejahtera")
   skrining    Skrining[]
   createdAt   DateTime   @default(now())
 }

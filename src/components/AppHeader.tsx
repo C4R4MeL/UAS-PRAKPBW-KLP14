@@ -2,6 +2,7 @@
 
 interface AppHeaderProps {
   namaLengkap: string;
+  posyandu: string;
   activeTab: "dashboard" | "form";
   setActiveTab: (tab: "dashboard" | "form") => void;
   setResultData: (data: null) => void;
@@ -10,6 +11,7 @@ interface AppHeaderProps {
 
 export default function AppHeader({
   namaLengkap,
+  posyandu,
   activeTab,
   setActiveTab,
   setResultData,
@@ -38,7 +40,7 @@ export default function AppHeader({
           {/* Info Kader */}
           <div className="hidden md:flex flex-col items-end">
             <span className="text-xs font-black text-slate-700">Halo, {namaLengkap}</span>
-            <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Kader Desa Aktif</span>
+            <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">{posyandu}</span>
           </div>
 
           {/* Switch Tabs */}

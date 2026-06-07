@@ -23,6 +23,7 @@ export async function GET() {
         id: string;
         username: string;
         namaLengkap: string;
+        posyandu: string;
       };
 
       return NextResponse.json({
@@ -31,6 +32,7 @@ export async function GET() {
           id: decoded.id,
           username: decoded.username,
           namaLengkap: decoded.namaLengkap,
+          posyandu: decoded.posyandu,
         },
       });
     } catch (err) {

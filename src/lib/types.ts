@@ -20,6 +20,7 @@ export interface User {
   id: string;
   username: string;
   namaLengkap: string;
+  posyandu: string;
 }
 
 // Struktur data statistik dashboard

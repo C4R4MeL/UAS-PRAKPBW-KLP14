@@ -11,6 +11,7 @@ export function useAuth() {
   const [authUsername, setAuthUsername] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authNamaLengkap, setAuthNamaLengkap] = useState("");
+  const [authPosyandu, setAuthPosyandu] = useState("");
   const [authError, setAuthError] = useState("");
   const [authSuccess, setAuthSuccess] = useState("");
   const [authSubmitting, setAuthSubmitting] = useState(false);
@@ -50,7 +51,7 @@ export function useAuth() {
       const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
       const payload = isLogin
         ? { username: authUsername, password: authPassword }
-        : { username: authUsername, namaLengkap: authNamaLengkap, password: authPassword };
+        : { username: authUsername, namaLengkap: authNamaLengkap, password: authPassword, posyandu: authPosyandu };
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -72,6 +73,7 @@ export function useAuth() {
           setAuthTab("login");
           setAuthPassword("");
           setAuthNamaLengkap("");
+          setAuthPosyandu("");
         }
       } else {
         setAuthError(data.error || "Gagal memproses permintaan.");
@@ -110,6 +112,8 @@ export function useAuth() {
     setAuthPassword,
     authNamaLengkap,
     setAuthNamaLengkap,
+    authPosyandu,
+    setAuthPosyandu,
     authError,
     setAuthError,
     authSuccess,

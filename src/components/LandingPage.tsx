@@ -12,6 +12,8 @@ interface LandingPageProps {
   setAuthPassword: (val: string) => void;
   authNamaLengkap: string;
   setAuthNamaLengkap: (val: string) => void;
+  authPosyandu: string;
+  setAuthPosyandu: (val: string) => void;
   authError: string;
   setAuthError: (val: string) => void;
   authSuccess: string;
@@ -29,6 +31,8 @@ export default function LandingPage({
   setAuthPassword,
   authNamaLengkap,
   setAuthNamaLengkap,
+  authPosyandu,
+  setAuthPosyandu,
   authError,
   setAuthError,
   authSuccess,
@@ -522,6 +526,8 @@ export default function LandingPage({
                 setAuthPassword={setAuthPassword}
                 authNamaLengkap={authNamaLengkap}
                 setAuthNamaLengkap={setAuthNamaLengkap}
+                authPosyandu={authPosyandu}
+                setAuthPosyandu={setAuthPosyandu}
                 authError={authError}
                 setAuthError={setAuthError}
                 authSuccess={authSuccess}

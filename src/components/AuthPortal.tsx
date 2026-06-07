@@ -11,6 +11,8 @@ interface AuthPortalProps {
   setAuthPassword: (val: string) => void;
   authNamaLengkap: string;
   setAuthNamaLengkap: (val: string) => void;
+  authPosyandu: string;
+  setAuthPosyandu: (val: string) => void;
   authError: string;
   setAuthError: (val: string) => void;
   authSuccess: string;
@@ -29,6 +31,8 @@ export default function AuthPortal({
   setAuthPassword,
   authNamaLengkap,
   setAuthNamaLengkap,
+  authPosyandu,
+  setAuthPosyandu,
   authError,
   setAuthError,
   authSuccess,
@@ -108,19 +112,32 @@ export default function AuthPortal({
           )}
 
           <form onSubmit={handleAuthSubmit} className="space-y-4">
-            {/* Nama Lengkap (Hanya saat Register) */}
+            {/* Nama Lengkap & Posyandu (Hanya saat Register) */}
             {authTab === "register" && (
-              <div className="space-y-1.5 animate-slideDown">
-                <label className="text-xs font-bold text-slate-700">Nama Lengkap Kader</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Contoh: Bidan Siti Aminah"
-                  value={authNamaLengkap}
-                  onChange={(e) => setAuthNamaLengkap(e.target.value)}
-                  className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
-                />
-              </div>
+              <>
+                <div className="space-y-1.5 animate-slideDown">
+                  <label className="text-xs font-bold text-slate-700">Nama Lengkap Kader</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Bidan Siti Aminah"
+                    value={authNamaLengkap}
+                    onChange={(e) => setAuthNamaLengkap(e.target.value)}
+                    className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div className="space-y-1.5 animate-slideDown">
+                  <label className="text-xs font-bold text-slate-700">Nama Posyandu / Institusi</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Posyandu Melati I"
+                    value={authPosyandu}
+                    onChange={(e) => setAuthPosyandu(e.target.value)}
+                    className="w-full px-4 py-2.5 text-sm border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </>
             )}
 
             {/* Username */}

@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { username, namaLengkap, password } = body;
+    const { username, namaLengkap, password, posyandu } = body;
 
     // Validasi input
     if (!username || typeof username !== "string" || username.trim() === "") {
@@ -17,6 +17,12 @@ export async function POST(request: Request) {
     if (!namaLengkap || typeof namaLengkap !== "string" || namaLengkap.trim() === "") {
       return NextResponse.json(
         { success: false, error: "Nama lengkap wajib diisi." },
+        { status: 400 }
+      );
+    }
+    if (!posyandu || typeof posyandu !== "string" || posyandu.trim() === "") {
+      return NextResponse.json(
+        { success: false, error: "Nama Posyandu / Institusi wajib diisi." },
         { status: 400 }
       );
     }
@@ -53,6 +59,7 @@ export async function POST(request: Request) {
         username: cleanUsername,
         namaLengkap: namaLengkap.trim(),
         password: hashedPassword,
+        posyandu: posyandu.trim(),
       },
     });
 
@@ -63,6 +70,7 @@ export async function POST(request: Request) {
         id: newKader.id,
         username: newKader.username,
         namaLengkap: newKader.namaLengkap,
+        posyandu: newKader.posyandu,
       },
     });
   } catch (error: any) {

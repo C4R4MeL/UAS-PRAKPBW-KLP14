@@ -7,12 +7,12 @@
 ## ✨ Fitur Utama
 
 - **🏥 Landing Page Medis Profesional**: Halaman publik interaktif yang memperjelas urgensi preeklampsia, menjelaskan alur rujukan kader, serta memvisualisasikan tiruan (mockup) hasil penapisan risiko (risiko tinggi vs aman) dan laporan rujukan WhatsApp.
-- **🔐 Portal Autentikasi Kader Terintegrasi**: Fitur Registrasi dan Login aman bagi kader kesehatan desa yang disematkan langsung di landing page menggunakan enkripsi sandi (`bcryptjs`) dan token JWT yang disimpan aman dalam cookie **HTTP-Only (Secure, SameSite: Strict)**.
-- **🛡️ Data Terisolasi Per Kader**: Data riwayat skrining terisolasi aman per akun kader. Kader hanya dapat melihat, menyaring, dan mencari rekam medis ibu hamil yang mereka periksa sendiri di dasbor utama.
-- **🧠 Logika Sistem Pakar (Rule-Based)**: Klasifikasi otomatis status **"Risiko Tinggi"** vs **"Aman"** secara real-time berdasarkan kriteria klinis utama (Tekanan Darah, Usia Ibu, IMT sebelum hamil, Gravida & Jarak Kehamilan).
-- **📊 Dasbor Statistik Analitik (SVG)**: Visualisasi data real-time berbasis SVG interaktif (ringan tanpa *library* luar) yang menyajikan Donut Chart proporsi risiko, Grafik Bar faktor pemicu, dan Distribusi Usia Ibu.
+- **🔐 Portal Autentikasi Kader Terintegrasi**: Fitur Registrasi dan Login aman bagi kader kesehatan desa yang disematkan langsung di landing page menggunakan enkripsi sandi (`bcryptjs`) dan token JWT yang disimpan aman dalam cookie **HTTP-Only (Secure, SameSite: Strict)** dengan input kolom nama Posyandu/Institusi.
+- **👥 Kolaborasi Data Per Posyandu (Multi-Kader)**: Data riwayat skrining dibagikan secara aman dan kolektif di antara kader-kader yang terdaftar dalam Posyandu/Institusi yang sama, sedangkan data antar-Posyandu diisolasi secara ketat. Nama "Kader Pemeriksa" ditampilkan pada riwayat untuk transparansi data.
+- **🧠 Logika Sistem Pakar (Rule-Based)**: Klasifikasi otomatis status **"Risiko Tinggi"** vs **"Aman"** secara real-time berdasarkan kriteria klinis utama (Tekanan Darah: Sistolik $\ge 140$ atau Diastolik $\ge 90$ mmHg, Usia Ibu $\ge 35$ tahun, IMT sebelum hamil $> 30$, Hamil Pertama (Nulipara), atau Jarak Kehamilan $> 10$ tahun).
+- **📊 Dasbor Statistik Analitik (SVG)**: Visualisasi data real-time berbasis SVG interaktif (ringan tanpa *library* luar) yang menyajikan Donut Chart proporsi risiko, Grafik Bar faktor pemicu, dan Distribusi Usia Ibu secara gabungan di satu wilayah Posyandu.
 - **🧮 Kalkulator IMT Pembantu**: Kalkulator mini terintegrasi untuk menghitung Indeks Massa Tubuh (IMT) ibu hamil secara otomatis dari input Berat Badan (kg) dan Tinggi Badan (cm).
-- **📲 Integrasi Notifikasi WhatsApp**: Tombol instan untuk membagikan laporan hasil skrining ke Bidan Desa dengan format pesan WhatsApp yang ringkas, rapi, dan informatif.
+- **📲 Integrasi Notifikasi WhatsApp**: Tombol instan untuk membagikan laporan hasil skrining ke Bidan Desa dengan format pesan WhatsApp yang ringkas, rapi, dan informatif yang 100% selaras dengan tiruan visual di landing page.
 
 ---
 

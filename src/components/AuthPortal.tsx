@@ -17,6 +17,7 @@ interface AuthPortalProps {
   setAuthSuccess: (val: string) => void;
   authSubmitting: boolean;
   handleAuthSubmit: (e: React.FormEvent) => void;
+  isEmbedded?: boolean;
 }
 
 export default function AuthPortal({
@@ -34,15 +35,10 @@ export default function AuthPortal({
   setAuthSuccess,
   authSubmitting,
   handleAuthSubmit,
+  isEmbedded = false,
 }: AuthPortalProps) {
-  return (
-    <div className="min-h-screen bg-gradient-to-tr from-rose-500 via-pink-500 to-violet-600 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      
-      {/* Latar Belakang Lingkaran Blur */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-300/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div className="w-full max-w-md bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden relative z-10 animate-scaleUp">
+  const cardContent = (
+    <div className={`w-full max-w-md bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden relative z-10 ${isEmbedded ? "" : "animate-scaleUp"}`}>
         
         {/* Header Portal */}
         <div className="p-6 text-center bg-slate-900 text-white flex flex-col items-center">
@@ -170,6 +166,18 @@ export default function AuthPortal({
           </form>
         </div>
       </div>
+  );
+
+  if (isEmbedded) {
+    return cardContent;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-tr from-rose-500 via-pink-500 to-violet-600 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+      {/* Latar Belakang Lingkaran Blur */}
+      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rose-300/10 rounded-full blur-3xl pointer-events-none"></div>
+      {cardContent}
     </div>
   );
 }

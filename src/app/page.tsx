@@ -11,7 +11,7 @@ import { computeStats } from "@/lib/utils";
 
 // Komponen Modular
 import LoadingScreen from "@/components/LoadingScreen";
-import AuthPortal from "@/components/AuthPortal";
+import LandingPage from "@/components/LandingPage";
 import AppHeader from "@/components/AppHeader";
 import WelcomeBanner from "@/components/WelcomeBanner";
 import DashboardView from "@/components/DashboardView";
@@ -38,10 +38,10 @@ export default function Home() {
     return <LoadingScreen />;
   }
 
-  // 2. Portal login/register jika belum login
+  // 2. Landing Page profesional jika belum login
   if (!auth.currentUser) {
     return (
-      <AuthPortal
+      <LandingPage
         authTab={auth.authTab}
         setAuthTab={auth.setAuthTab}
         authUsername={auth.authUsername}

@@ -6,17 +6,11 @@
 
 ## ✨ Fitur Utama
 
-- **🔐 Portal Autentikasi Kader**: Fitur Registrasi dan Login aman bagi kader kesehatan desa menggunakan enkripsi sandi (`bcryptjs`) dan token JWT yang disimpan aman dalam cookie **HTTP-Only (Secure, SameSite: Strict)**.
-- **🛡️ Isolasi Data Sesi (Privasi)**: Data riwayat skrining terisolasi aman per akun kader. Kader hanya dapat melihat dan mencari rekam medis ibu hamil yang mereka periksa sendiri.
-- **🧠 Logika Sistem Pakar (Rule-Based)**: Klasifikasi otomatis status **"Risiko Tinggi"** vs **"Aman"** secara real-time berdasarkan 4 kriteria klinis utama:
-  - **Tekanan Darah**: Sistolik $\ge 160$ mmHg atau Diastolik $\ge 90$ mmHg.
-  - **Usia Ibu**: $\ge 35$ tahun.
-  - **IMT sebelum hamil**: Obesitas ($>30$).
-  - **Gravida**: Kehamilan pertama (Nulipara) atau jarak kehamilan sebelumnya $>10$ tahun.
-- **📊 Dasbor Statistik Analitik (SVG)**: Visualisasi data real-time berbasis SVG interaktif (ringan tanpa *library* luar) yang menyajikan:
-  - **Donut Chart**: Proporsi pasien berstatus aman vs berisiko tinggi.
-  - **Faktor Risiko Terbanyak**: Grafik bar progresif faktor pemicu dominan di lapangan.
-  - **Distribusi Usia Ibu**: Grafik sebaran kelompok usia pasien (Remaja, Ideal, Berisiko).
+- **🏥 Landing Page Medis Profesional**: Halaman publik interaktif yang memperjelas urgensi preeklampsia, menjelaskan alur rujukan kader, serta memvisualisasikan tiruan (mockup) hasil penapisan risiko (risiko tinggi vs aman) dan laporan rujukan WhatsApp.
+- **🔐 Portal Autentikasi Kader Terintegrasi**: Fitur Registrasi dan Login aman bagi kader kesehatan desa yang disematkan langsung di landing page menggunakan enkripsi sandi (`bcryptjs`) dan token JWT yang disimpan aman dalam cookie **HTTP-Only (Secure, SameSite: Strict)**.
+- **🛡️ Data Terisolasi Per Kader**: Data riwayat skrining terisolasi aman per akun kader. Kader hanya dapat melihat, menyaring, dan mencari rekam medis ibu hamil yang mereka periksa sendiri di dasbor utama.
+- **🧠 Logika Sistem Pakar (Rule-Based)**: Klasifikasi otomatis status **"Risiko Tinggi"** vs **"Aman"** secara real-time berdasarkan kriteria klinis utama (Tekanan Darah, Usia Ibu, IMT sebelum hamil, Gravida & Jarak Kehamilan).
+- **📊 Dasbor Statistik Analitik (SVG)**: Visualisasi data real-time berbasis SVG interaktif (ringan tanpa *library* luar) yang menyajikan Donut Chart proporsi risiko, Grafik Bar faktor pemicu, dan Distribusi Usia Ibu.
 - **🧮 Kalkulator IMT Pembantu**: Kalkulator mini terintegrasi untuk menghitung Indeks Massa Tubuh (IMT) ibu hamil secara otomatis dari input Berat Badan (kg) dan Tinggi Badan (cm).
 - **📲 Integrasi Notifikasi WhatsApp**: Tombol instan untuk membagikan laporan hasil skrining ke Bidan Desa dengan format pesan WhatsApp yang ringkas, rapi, dan informatif.
 
@@ -89,9 +83,23 @@ momcare-connect/
 │   │   │   └── skrining/route.ts     # API Skrining Berelasi (GET & POST)
 │   │   ├── globals.css       # Animasi mikro dan tema Tailwind
 │   │   ├── layout.tsx        # Layout utama Next.js
-│   │   └── page.tsx          # Halaman portal login dan dasbor utama UI/UX
+│   │   └── page.tsx          # Orchestrator utama sisi klien
+│   ├── components/
+│   │   ├── LandingPage.tsx   # Landing page profesional medis & klarifikasi output
+│   │   ├── AuthPortal.tsx    # Formulir Login/Register kader tersemat
+│   │   ├── AppHeader.tsx     # Header aplikasi setelah masuk
+│   │   ├── WelcomeBanner.tsx # Banner sambutan kader
+│   │   ├── DashboardView.tsx # Grafik statistik & riwayat skrining
+│   │   ├── SkriningForm.tsx  # Formulir penapisan ibu hamil
+│   │   ├── ResultModal.tsx   # Modal diagnosis risiko & share WhatsApp
+│   │   └── LoadingScreen.tsx # Spinner loading pemecah sesi
+│   ├── hooks/
+│   │   ├── useAuth.ts        # Logika otentikasi kader
+│   │   └── useSkrining.ts    # Logika formulir, riwayat, dan kalkulasi BMI
 │   └── lib/
-│       └── prisma.ts         # Singleton Client dengan Adapter PG untuk Prisma 7
+│       ├── prisma.ts         # Singleton Client dengan Adapter PG untuk Prisma 7
+│       ├── types.ts          # Deklarasi tipe data
+│       └── utils.ts          # Utilitas hitung statistik dan integrasi WhatsApp
 ├── .env                      # File kredensial lokal (diabaikan oleh git)
 ├── next.config.ts            # Konfigurasi Next.js
 └── package.json              # Dependensi proyek

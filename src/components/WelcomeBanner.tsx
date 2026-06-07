@@ -20,7 +20,7 @@ export default function WelcomeBanner({ namaLengkap }: WelcomeBannerProps) {
           Deteksi Dini Risiko Preeklampsia untuk Keselamatan Ibu &amp; Bayi
         </h2>
         <p className="text-sm md:text-base text-rose-50/90 mt-2 font-medium">
-          Selamat bekerja, **{namaLengkap}**. Deteksi dini risiko preeklampsia secara cepat dan bagikan laporan ke Bidan Desa.
+          Selamat bekerja, <strong className="font-extrabold text-white">{namaLengkap}</strong>. Deteksi dini risiko preeklampsia secara cepat dan bagikan laporan ke Bidan Desa.
         </p>
       </div>
     </div>

@@ -28,6 +28,12 @@ export function useSkrining(currentUser: User | null) {
   const [searchQuery, setSearchQuery] = useState("");
   const [riskFilter, setRiskFilter] = useState("All");
 
+  // Edit Mode State
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Deleting State (untuk UI feedback)
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   // Memuat data riwayat skrining (hanya jika sudah login)
   const fetchHistory = async () => {
     try {
@@ -50,7 +56,7 @@ export function useSkrining(currentUser: User | null) {
     }
   }, [currentUser]);
 
-  // Submit handler untuk skrining baru
+  // Submit handler untuk skrining baru ATAU update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -66,8 +72,12 @@ export function useSkrining(currentUser: User | null) {
         imt: parseFloat(imt),
       };
 
-      const res = await fetch("/api/skrining", {
-        method: "POST",
+      const isEditing = editingId !== null;
+      const url = isEditing ? `/api/skrining/${editingId}` : "/api/skrining";
+      const method = isEditing ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -91,6 +101,54 @@ export function useSkrining(currentUser: User | null) {
     }
   };
 
+  // Mengisi form dengan data yang akan di-edit
+  const startEdit = (item: Skrining) => {
+    setEditingId(item.id);
+    setNamaIbu(item.namaIbu);
+    setUsia(String(item.usia));
+    setSistolik(String(item.sistolik));
+    setDiastolik(String(item.diastolik));
+    setIsFirstPregnancy(item.isFirstPregnancy);
+    setJarakKehamilan(item.jarakKehamilan !== null ? String(item.jarakKehamilan) : "");
+    setImt(String(item.imt));
+    setShowBmiHelper(false);
+    setBeratBadan("");
+    setTinggiBadan("");
+  };
+
+  // Batalkan mode edit
+  const cancelEdit = () => {
+    setEditingId(null);
+    resetForm();
+  };
+
+  // Hapus data skrining
+  const handleDelete = async (id: string) => {
+    if (!confirm("Apakah Anda yakin ingin menghapus data skrining ini? Tindakan ini tidak dapat dibatalkan.")) {
+      return;
+    }
+
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/skrining/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        fetchHistory();
+      } else {
+        alert("Gagal menghapus data: " + data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting record:", error);
+      alert("Terjadi kesalahan saat menghapus data.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const resetForm = () => {
     setNamaIbu("");
     setUsia("");
@@ -102,6 +160,7 @@ export function useSkrining(currentUser: User | null) {
     setShowBmiHelper(false);
     setBeratBadan("");
     setTinggiBadan("");
+    setEditingId(null);
   };
 
   const hitungIMT = () => {
@@ -153,6 +212,14 @@ export function useSkrining(currentUser: User | null) {
     searchQuery, setSearchQuery,
     riskFilter, setRiskFilter,
     filteredHistory,
+
+    // Edit & Delete
+    editingId,
+    setEditingId,
+    startEdit,
+    cancelEdit,
+    deletingId,
+    handleDelete,
 
     // Actions
     handleSubmit,

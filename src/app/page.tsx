@@ -96,6 +96,12 @@ export default function Home() {
             riskFilter={skrining.riskFilter}
             setRiskFilter={skrining.setRiskFilter}
             setActiveTab={setActiveTab}
+            onEdit={(item) => {
+              skrining.startEdit(item);
+              setActiveTab("form");
+            }}
+            onDelete={skrining.handleDelete}
+            deletingId={skrining.deletingId}
           />
         )}
 
@@ -116,6 +122,11 @@ export default function Home() {
             resetForm={skrining.resetForm}
             hitungIMT={skrining.hitungIMT}
             submitting={skrining.submitting}
+            editingId={skrining.editingId}
+            cancelEdit={() => {
+              skrining.cancelEdit();
+              setActiveTab("dashboard");
+            }}
           />
         )}
 

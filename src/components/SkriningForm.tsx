@@ -32,6 +32,10 @@ interface SkriningFormProps {
   resetForm: () => void;
   hitungIMT: () => void;
   submitting: boolean;
+
+  // Edit Mode
+  editingId: string | null;
+  cancelEdit: () => void;
 }
 
 export default function SkriningForm({
@@ -47,17 +51,31 @@ export default function SkriningForm({
   tinggiBadan, setTinggiBadan,
   handleSubmit, resetForm, hitungIMT,
   submitting,
+  editingId, cancelEdit,
 }: SkriningFormProps) {
+  const isEditing = editingId !== null;
   return (
     <div className="max-w-3xl mx-auto animate-fadeIn">
       
       {/* Form Card */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden mb-8">
         <div className="p-6 md:p-8 bg-gradient-to-r from-slate-900 to-slate-800 text-white">
-          <h3 className="text-xl font-extrabold">Formulir Skrining Deteksi Dini</h3>
+          <h3 className="text-xl font-extrabold">
+            {isEditing ? "Edit Data Skrining" : "Formulir Skrining Deteksi Dini"}
+          </h3>
           <p className="text-sm text-slate-400 mt-1">
-            Masukkan data ibu hamil dengan cermat untuk menghitung hasil diagnosis status risiko.
+            {isEditing
+              ? "Perbarui data ibu hamil di bawah ini, lalu simpan perubahan."
+              : "Masukkan data ibu hamil dengan cermat untuk menghitung hasil diagnosis status risiko."}
           </p>
+          {isEditing && (
+            <div className="mt-3 flex items-center space-x-2 text-amber-400 text-xs font-semibold">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              <span>Mode Edit — Status risiko akan dihitung ulang setelah disimpan</span>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
@@ -298,29 +316,43 @@ export default function SkriningForm({
 
           {/* Form Buttons */}
           <div className="flex space-x-4 pt-4 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={resetForm}
-              className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
-            >
-              Reset Form
-            </button>
+            {isEditing ? (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Batalkan Edit
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="flex-1 py-3 px-4 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+              >
+                Reset Form
+              </button>
+            )}
             <button
               type="submit"
               disabled={submitting}
-              className="flex-[2] py-3 px-4 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-md shadow-rose-200 hover:shadow-none transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+              className={`flex-[2] py-3 px-4 ${isEditing ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-200' : 'bg-rose-500 hover:bg-rose-600 shadow-rose-200'} text-white font-bold rounded-xl shadow-md hover:shadow-none transition-all flex items-center justify-center space-x-2 disabled:opacity-50`}
             >
               {submitting ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Memproses Hasil...</span>
+                  <span>{isEditing ? 'Memperbarui...' : 'Memproses Hasil...'}</span>
                 </>
               ) : (
                 <>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    {isEditing ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    )}
                   </svg>
-                  <span>Hitung Risiko &amp; Simpan</span>
+                  <span>{isEditing ? 'Simpan Perubahan' : 'Hitung Risiko & Simpan'}</span>
                 </>
               )}
             </button>
